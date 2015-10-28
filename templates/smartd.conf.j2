@@ -1,23 +1,13 @@
-{% if smartd_long_test_dow == "random" %}
-{%   set smartd_long_test_dow_random = true %}
-{% endif %}
-{% if smartd_long_test_hour == "random" %}
-{%   set smartd_long_test_hour_random = true %}
-{% endif %}
-{% if smartd_short_test_hour == "random" %}
-{%   set smartd_short_test_hour_random = true %}
-{% endif %}
-{% for disk in disks.stdout_lines %}
-{%   if smartd_long_test_dow_random %}
-{%     set smartd_long_test_dow = range(1,8)|random %}
-{%   endif %}
-{%   if smartd_long_test_hour_random %}
-{%     set smartd_long_test_hour = range(1,24)|random %}
-{%     set smartd_long_test_hour = "{0:02d}".format(smartd_long_test_hour) %}
-{%   endif %}
-{%   if smartd_short_test_hour_random %}
-{%     set smartd_short_test_hour = range(1,24)|random %}
-{%     set smartd_short_test_hour = "{0:02d}".format(smartd_short_test_hour) %}
-{%   endif %}
-{{ disk }} -a -o on -S on -s (S/{{ smartd_short_test_month }}/{{ smartd_short_test_dom }}/{{ smartd_short_test_dow }}/{{ smartd_short_test_hour }}|L/{{ smartd_long_test_month }}/{{ smartd_long_test_dom }}/{{ smartd_long_test_dow }}/{{ smartd_long_test_hour }}) -m root
+{% for local_name in smartd_disks %}
+{{
+	local_name.disk }} {%if local_name.sub is defined and local_name.sub %} -d {{ local_name.sub }}{% endif %} -a -o on -S on -s (S/{{ 
+	local_name.s_month | default('..') }}/{{ 
+	local_name.s_dom   | default('..') }}/{{ 
+	local_name.s_dow   | default('.') }}/{{ 
+	local_name.s_hour  | default("{0:02d}".format(range(1,24)|random)) }}|L/{{ 
+	local_name.l_month | default('..') }}/{{ 
+	local_name._l_dom  | default('..') }}/{{ 
+	local_name.l_dow   | default(range(1,8)|random) }}/{{ 
+	local_name.l_hour  | default("{0:02d}".format(range(1,24)|random)) }}) -m {{ 
+	smartd_mail }}
 {% endfor %}

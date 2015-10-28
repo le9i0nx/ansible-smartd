@@ -8,3 +8,10 @@ smartd_long_test_month: '..'
 smartd_long_test_dom: '..'
 smartd_long_test_dow: 'random'
 smartd_long_test_hour: 'random'
+
+smartd_mail: 'root'
+
+smartmontools_packages: ['smartmontools']
+# example
+#smartd_disks:
+#    - {disk: '/dev/cciss/c0d0', sub: 'cciss,6' }
